@@ -33,19 +33,19 @@ public class TCPServer extends Thread {
         switch (command){
             case "available":
                outToClient.writeBytes(String.valueOf(node.available()+"\n"));
-               broadcast();
+               broadcast(command);
                break;
             case "reserve":
                 parameter = Integer.valueOf(arrayData[1]);
                 node.reserve(parameter);
                 outToClient.writeBytes("reserva ok \n");
-                broadcast();
+                broadcast(command);
                 break;
             case "cancel":
                 parameter = Integer.valueOf(arrayData[1]);
                 node.cancel(parameter);
                 outToClient.writeBytes("cancel ok \n");
-                broadcast();
+                broadcast(command);
                 break;
             default:
                 outToClient.writeBytes("incorrect command \n");
@@ -53,10 +53,13 @@ public class TCPServer extends Thread {
         }
     }
     
-    private void broadcast()throws IOException{
+    private void broadcast(String command)throws IOException{
+        Node.time++;
+        int time_stamp = Node.time;
+        Message message = new Message(time_stamp,command,1);
         DatagramSocket clientSocket = new DatagramSocket();       
         InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
-        String sentence = "Hola hermanitos mios";
+        String sentence = message.toString();
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
         sendData = sentence.getBytes();
