@@ -29,8 +29,11 @@ public class UDPServer extends Thread {
             try {
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
+                 System.out.println("Received UDP "+ sentence);
+              
                 String[] s = sentence.split("-");
-                Message msg = new Message(Integer.valueOf(s[0]) , s[1], Integer.valueOf(s[2]));
+               
+                Message msg = new Message(Integer.parseInt(s[0]),s[1],Integer.parseInt(s[2]));
                 System.out.println("Received UDP: " + msg.toString());
                 
                 InetAddress IPAddress = receivePacket.getAddress();

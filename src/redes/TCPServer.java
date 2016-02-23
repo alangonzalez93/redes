@@ -84,7 +84,6 @@ public class TCPServer extends Thread {
                 clientSentence = inFromClient.readLine();
                 accion(clientSentence);
                 //System.out.println("Received TCP: " + clientSentence);
-                
                 }
                 //
             } catch (IOException ex) {
