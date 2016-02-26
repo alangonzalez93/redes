@@ -38,7 +38,7 @@ public class TCPServer extends Thread {
         }
         DatagramSocket clientSocket = new DatagramSocket();       
         InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
-        String sentence = message.toString();
+        String sentence = Node.REQUEST+ "-" + message.toString();
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
         sendData = sentence.getBytes();
@@ -47,7 +47,7 @@ public class TCPServer extends Thread {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
         clientSocket.receive(receivePacket);       
         String modifiedSentence = new String(receivePacket.getData());      
-        System.out.println("FROM SERVER:" + modifiedSentence);       
+       // System.out.println("FROM SERVER:" + modifiedSentence);       
         clientSocket.close();
     }
     
