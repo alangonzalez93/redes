@@ -13,7 +13,7 @@ class Message {
    private Integer time;
    private String msg;
    private Integer pid;
-   private int parameter = -1;
+   private int parameter = 0;
 
     public Message(Integer time, String msg, Integer pid) {
         this.time = time;

@@ -35,7 +35,7 @@ public class UDPServer extends Thread {
                 switch(s[0]){
                     case Node.REQUEST:
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
-                        System.out.println("Received UDP: " + msg.toString());
+                        System.out.println("request: " + msg.toString());
                         Node.q.add(msg);
                         reply();
                     break;
@@ -44,10 +44,12 @@ public class UDPServer extends Thread {
                         if(replyCount >= Node.NPROCESSES){                            
                             checkAndExecute();
                         }
+                         System.out.println("reply: " );
                     break;
                     case Node.RELEASE:
                         Node.q.remove();
                         checkAndExecute();
+                         System.out.println("release: ");
                     break;
                 
                 }
@@ -97,7 +99,7 @@ public class UDPServer extends Thread {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
         clientSocket.receive(receivePacket);       
         String modifiedSentence = new String(receivePacket.getData());      
-        System.out.println("FROM SERVER:" + modifiedSentence);       
+        //System.out.println("FROM SERVER:" + modifiedSentence);       
         clientSocket.close();
     }
     
@@ -116,7 +118,7 @@ public class UDPServer extends Thread {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
         clientSocket.receive(receivePacket);       
         String modifiedSentence = new String(receivePacket.getData());      
-        System.out.println("FROM SERVER:" + modifiedSentence);       
+        //System.out.println("FROM SERVER:" + modifiedSentence);       
         clientSocket.close();
     }
 }
