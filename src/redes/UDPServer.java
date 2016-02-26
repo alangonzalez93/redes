@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 public class UDPServer extends Thread {
 
+    int replyCount = 0;
     DatagramSocket serverSocket;
     byte[] receiveData;
     byte[] sendData;
@@ -29,13 +30,40 @@ public class UDPServer extends Thread {
             try {
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
-                 System.out.println("Received UDP "+ sentence);
-              
+                System.out.println("Received UDP "+ sentence);
                 String[] s = sentence.split("-");
-               
-                Message msg = new Message(Integer.parseInt(s[0]),s[1],Integer.parseInt(s[2]));
-                System.out.println("Received UDP: " + msg.toString());
+                switch(s[0]){
+                    case Node.REQUEST:
+                        Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
+                        System.out.println("Received UDP: " + msg.toString());
+                        Node.q.add(msg);
+                    break;
+                    case Node.REPLY:
+                        replyCount++;
+                        if(replyCount >= Node.NPROCESSES){
+                            replyCount =0;
+                            if(!Node.q.isEmpty() && Node.q.peek().pid == Node.pid){
+                                Message  m = Node.q.remove();
+                                switch(m.msg){
+                                    case "available":
+                                        System.out.println(Node.available());
+                                    break;
+                                    case "reserve":
+                                        Node.reserve(m.parameter);
+                                    break;
+                                    case "cancel":
+                                }
+                            }
+                        }
+                    break;
+                    case Node.RELEASE:
+                       
+                        //System.out.println("Received UDP: " + msg.toString());
+                        
+                    break;
                 
+                }
+
                 InetAddress IPAddress = receivePacket.getAddress();
                 int port = receivePacket.getPort();
                 String capitalizedSentence = sentence.toUpperCase();
@@ -47,5 +75,13 @@ public class UDPServer extends Thread {
             }
 
         }
+    }
+    
+    private void release(){
+    
+    }
+    
+    private void reply(){
+    
     }
 }

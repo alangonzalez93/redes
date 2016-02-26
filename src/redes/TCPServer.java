@@ -19,11 +19,9 @@ public class TCPServer extends Thread {
     String capitalizedSentenceTCP;
     ServerSocket welcomeSocket;
     DataOutputStream outToClient;
-    Node node;
-
+    
     public TCPServer() throws IOException {
         welcomeSocket = new ServerSocket(6789);
-        node = new Node();
     }
 
     private void accion(String data) throws IOException{
@@ -32,20 +30,20 @@ public class TCPServer extends Thread {
         Integer parameter;
         switch (command){
             case "available":
-               outToClient.writeBytes(String.valueOf(node.available()+"\n"));
-               broadcast(command);
+               //outToClient.writeBytes(String.valueOf(node.available()+"\n"));
+               request(command);
                break;
             case "reserve":
                 parameter = Integer.valueOf(arrayData[1]);
-                node.reserve(parameter);
+               // node.reserve(parameter);
                 outToClient.writeBytes("reserva ok \n");
-                broadcast(command);
+                request(command);
                 break;
             case "cancel":
                 parameter = Integer.valueOf(arrayData[1]);
-                node.cancel(parameter);
-                outToClient.writeBytes("cancel ok \n");
-                broadcast(command);
+                //node.cancel(parameter);
+                //outToClient.writeBytes("cancel ok \n");
+                request(command);
                 break;
             default:
                 outToClient.writeBytes("incorrect command \n");
@@ -53,7 +51,7 @@ public class TCPServer extends Thread {
         }
     }
     
-    private void broadcast(String command)throws IOException{
+    private void request(String command)throws IOException{
         Node.time++;
         int time_stamp = Node.time;
         Message message = new Message(time_stamp,command,1);
