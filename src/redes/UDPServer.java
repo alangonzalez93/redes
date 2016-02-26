@@ -37,29 +37,17 @@ public class UDPServer extends Thread {
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
                         System.out.println("Received UDP: " + msg.toString());
                         Node.q.add(msg);
+                        reply();
                     break;
                     case Node.REPLY:
                         replyCount++;
-                        if(replyCount >= Node.NPROCESSES){
-                            replyCount =0;
-                            if(!Node.q.isEmpty() && Node.q.peek().pid == Node.pid){
-                                Message  m = Node.q.remove();
-                                switch(m.msg){
-                                    case "available":
-                                        System.out.println(Node.available());
-                                    break;
-                                    case "reserve":
-                                        Node.reserve(m.parameter);
-                                    break;
-                                    case "cancel":
-                                }
-                            }
+                        if(replyCount >= Node.NPROCESSES){                            
+                            checkAndExecute();
                         }
                     break;
                     case Node.RELEASE:
-                       
-                        //System.out.println("Received UDP: " + msg.toString());
-                        
+                        Node.q.remove();
+                        checkAndExecute();
                     break;
                 
                 }
@@ -77,11 +65,58 @@ public class UDPServer extends Thread {
         }
     }
     
-    private void release(){
-    
+    private void checkAndExecute(){
+        if(!Node.q.isEmpty() && Node.q.peek().getPid() == Node.pid){
+            Message  m = Node.q.remove();
+            switch(m.getMsg()){
+                case "available":
+                    System.out.println(Node.available());
+                break;
+                case "reserve":
+                    Node.reserve(m.getParameter());
+                break;
+                case "cancel":
+                    Node.cancel(m.getParameter());
+                break;
+            }
+        }
     }
     
-    private void reply(){
+    private void release() throws IOException {
+        Node.time++;
+        int time_stamp = Node.time;
+       // Message message = new Message(time_stamp,command,1);
+        DatagramSocket clientSocket = new DatagramSocket();       
+        InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
+        String sentence = Node.RELEASE + "-";
+        byte[] sendData = new byte[1024];
+        byte[] receiveData = new byte[1024];
+        sendData = sentence.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+        clientSocket.send(sendPacket);       
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
+        clientSocket.receive(receivePacket);       
+        String modifiedSentence = new String(receivePacket.getData());      
+        System.out.println("FROM SERVER:" + modifiedSentence);       
+        clientSocket.close();
+    }
     
+    private void reply() throws IOException {
+        Node.time++;
+        int time_stamp = Node.time;
+       // Message message = new Message(time_stamp,command,1);
+        DatagramSocket clientSocket = new DatagramSocket();       
+        InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
+        String sentence = Node.REPLY + "-";
+        byte[] sendData = new byte[1024];
+        byte[] receiveData = new byte[1024];
+        sendData = sentence.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+        clientSocket.send(sendPacket);       
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
+        clientSocket.receive(receivePacket);       
+        String modifiedSentence = new String(receivePacket.getData());      
+        System.out.println("FROM SERVER:" + modifiedSentence);       
+        clientSocket.close();
     }
 }

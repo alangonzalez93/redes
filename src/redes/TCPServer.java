@@ -23,38 +23,19 @@ public class TCPServer extends Thread {
     public TCPServer() throws IOException {
         welcomeSocket = new ServerSocket(6789);
     }
-
-    private void accion(String data) throws IOException{
+    
+    private void request(String data)throws IOException{
         String[] arrayData = data.split(" ");
         String command = arrayData[0];
-        Integer parameter;
-        switch (command){
-            case "available":
-               //outToClient.writeBytes(String.valueOf(node.available()+"\n"));
-               request(command);
-               break;
-            case "reserve":
-                parameter = Integer.valueOf(arrayData[1]);
-               // node.reserve(parameter);
-                outToClient.writeBytes("reserva ok \n");
-                request(command);
-                break;
-            case "cancel":
-                parameter = Integer.valueOf(arrayData[1]);
-                //node.cancel(parameter);
-                //outToClient.writeBytes("cancel ok \n");
-                request(command);
-                break;
-            default:
-                outToClient.writeBytes("incorrect command \n");
-                break;
-        }
-    }
-    
-    private void request(String command)throws IOException{
+        String parameter = "";
+        
         Node.time++;
         int time_stamp = Node.time;
-        Message message = new Message(time_stamp,command,1);
+        Message message = new Message(time_stamp,command,1); //agregarle el parametro al mensaje
+        if(arrayData.length > 1){
+            parameter = arrayData[1];
+            message.setParameter(Integer.parseInt(parameter));
+        }
         DatagramSocket clientSocket = new DatagramSocket();       
         InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
         String sentence = message.toString();
@@ -80,7 +61,7 @@ public class TCPServer extends Thread {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 outToClient = new DataOutputStream(connectionSocket.getOutputStream());
                 clientSentence = inFromClient.readLine();
-                accion(clientSentence);
+                request(clientSentence);
                 //System.out.println("Received TCP: " + clientSentence);
                 }
                 //
