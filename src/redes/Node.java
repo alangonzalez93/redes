@@ -9,7 +9,7 @@ public class Node {
     public static final String REQUEST = "REQUEST";
     public static final String REPLY = "REPLY";
     public static final String RELEASE = "RELEASE";
-    public static final int NPROCESSES = 2;
+    public static final int NPROCESSES = 1;
     public static final int pid = 1;
     
     static int reserved = 0;
@@ -30,6 +30,7 @@ public class Node {
     }*/
     
     public static int available(){
+        System.out.println("ejecute el available");
         return seats - reserved;
     }
     

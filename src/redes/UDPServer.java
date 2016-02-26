@@ -35,7 +35,7 @@ public class UDPServer extends Thread {
                 switch(s[0]){
                     case Node.REQUEST:
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
-                        System.out.println("request: " + msg.toString());
+                        System.out.println("request: " + msg.toString());                
                         Node.q.add(msg);
                         reply();
                     break;
@@ -67,9 +67,10 @@ public class UDPServer extends Thread {
         }
     }
     
-    private void checkAndExecute(){
+    private void checkAndExecute() throws IOException{
+        System.out.println("check and exec " + Node.q.peek().getPid() + " s");
         if(!Node.q.isEmpty() && Node.q.peek().getPid() == Node.pid){
-            Message  m = Node.q.remove();
+            Message  m = Node.q.remove();           
             switch(m.getMsg()){
                 case "available":
                     System.out.println(Node.available());
@@ -81,6 +82,7 @@ public class UDPServer extends Thread {
                     Node.cancel(m.getParameter());
                 break;
             }
+            release();
         }
     }
     

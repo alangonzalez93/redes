@@ -31,13 +31,14 @@ public class TCPServer extends Thread {
         
         Node.time++;
         int time_stamp = Node.time;
-        Message message = new Message(time_stamp,command,1); //agregarle el parametro al mensaje
+        Message message = new Message(time_stamp,command,Node.pid); //agregarle el parametro al mensaje
         if(arrayData.length > 1){
             parameter = arrayData[1];
             message.setParameter(Integer.parseInt(parameter));
         }
         DatagramSocket clientSocket = new DatagramSocket();       
         InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
+        Node.q.add(message);
         String sentence = Node.REQUEST+ "-" + message.toString();
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
