@@ -30,7 +30,6 @@ public class Main {
             String line = br.readLine();
             while (line != null) {
                 ips.add(line);
-                System.out.println(line);
                 line = br.readLine();                
             }
         } finally {

@@ -8,8 +8,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.lang.Math.*;
-import sun.org.mozilla.javascript.internal.ast.ForInLoop;
 
 public class UDPServer extends Thread {
 
@@ -32,27 +30,29 @@ public class UDPServer extends Thread {
             try {
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
-                System.out.println("Received UDP "+ sentence);
+               // System.out.println("Received UDP "+ sentence);
                 String[] s = sentence.split("-");
                 switch(s[0]){
                     case Main.REQUEST:    
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
-                        System.out.println("request: " + msg.toString());                
+                        System.out.println("me llego request: " + msg.toString());                
                         Main.q.add(msg);
                         reply();
                     break;
                     case Main.REPLY:
                         replyCount++;
-                        if(replyCount >= Main.NPROCESSES){                            
+                        if(replyCount >= Main.ips.size()){  
+                            System.out.println("Me llegaron todos los replys");
                             checkAndExecute();
                         }
-                         System.out.println("reply: " );
+                        
                     break;
                     case Main.RELEASE:
+                        System.out.println("me llego release");
                         exec(); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
                         checkAndExecute(); //se fija si es su turno y ejecuta
-                        System.out.println("release: ");
+                      
                     break;
                 
                 }
@@ -86,7 +86,6 @@ public class UDPServer extends Thread {
     }
     
     private void checkAndExecute() throws IOException{
-        System.out.println("check and exec " + Main.q.peek().getPid() + " s");
         if(!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid){
             exec();
             release();
