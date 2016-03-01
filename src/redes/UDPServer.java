@@ -38,7 +38,7 @@ public class UDPServer extends Thread {
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
                         Main.q.add(msg);
-                        reply();
+                        reply(msg.getPid());
                     break;
                     case Main.REPLY:
                         replyCount++;
@@ -97,29 +97,40 @@ public class UDPServer extends Thread {
         broadcast(null,Main.RELEASE);
     }
     
-    private void reply() throws IOException {
-       broadcast(null,Main.REPLY);
+    private void reply(Integer dst) throws IOException {
+      for (int i = 0; !Main.pids.get(i).equals(dst);i++)
+      send(Main.ips.get(i));  
     }
     
+    private void send(String ip) throws IOException{
+        DatagramSocket clientSocket = new DatagramSocket();            
+        InetAddress IPAddress = InetAddress.getByName(ip);
+        String sentence = Main.REPLY+ "-";
+        byte[] sendData = new byte[1024];
+        sendData = sentence.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+        clientSocket.send(sendPacket);             
+        clientSocket.close();  
+    }
     public static void broadcast(Message message, String type) throws IOException{
         for (int i = 0; i < Main.ips.size(); i++) {
-                DatagramSocket clientSocket = new DatagramSocket();            
-                InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
-                String sentence = "";
-                if(message != null)
-                    sentence = type+ "-" + message.toString();
-                else
-                    sentence = type+ "-";
-                byte[] sendData = new byte[1024];
-               // byte[] receiveData = new byte[1024];
-                sendData = sentence.getBytes();
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-                clientSocket.send(sendPacket);       
-               // DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-                //clientSocket.receive(receivePacket);       
-                //String modifiedSentence = new String(receivePacket.getData());      
-               // System.out.println("FROM SERVER:" + modifiedSentence);       
-                clientSocket.close();  
+            DatagramSocket clientSocket = new DatagramSocket();            
+            InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
+            String sentence = "";
+            if(message != null)
+                sentence = type+ "-" + message.toString();
+            else
+                sentence = type+ "-";
+            byte[] sendData = new byte[1024];
+           // byte[] receiveData = new byte[1024];
+            sendData = sentence.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+            clientSocket.send(sendPacket);       
+           // DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
+            //clientSocket.receive(receivePacket);       
+            //String modifiedSentence = new String(receivePacket.getData());      
+           // System.out.println("FROM SERVER:" + modifiedSentence);       
+            clientSocket.close();  
         }
     }
 }
