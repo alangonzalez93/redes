@@ -33,21 +33,21 @@ public class UDPServer extends Thread {
                 System.out.println("Received UDP "+ sentence);
                 String[] s = sentence.split("-");
                 switch(s[0]){
-                    case Node.REQUEST:
+                    case Main.REQUEST:
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
                         System.out.println("request: " + msg.toString());                
-                        Node.q.add(msg);
+                        Main.q.add(msg);
                         reply();
                     break;
-                    case Node.REPLY:
+                    case Main.REPLY:
                         replyCount++;
-                        if(replyCount >= Node.NPROCESSES){                            
+                        if(replyCount >= Main.NPROCESSES){                            
                             checkAndExecute();
                         }
                          System.out.println("reply: " );
                     break;
-                    case Node.RELEASE:
-                        Node.q.remove();
+                    case Main.RELEASE:
+                        Main.q.remove();
                         checkAndExecute();
                          System.out.println("release: ");
                     break;
@@ -68,9 +68,9 @@ public class UDPServer extends Thread {
     }
     
     private void checkAndExecute() throws IOException{
-        System.out.println("check and exec " + Node.q.peek().getPid() + " s");
-        if(!Node.q.isEmpty() && Node.q.peek().getPid() == Node.pid){
-            Message  m = Node.q.remove();           
+        System.out.println("check and exec " + Main.q.peek().getPid() + " s");
+        if(!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid){
+            Message  m = Main.q.remove();           
             switch(m.getMsg()){
                 case "available":
                     System.out.println(Node.available());
@@ -91,8 +91,8 @@ public class UDPServer extends Thread {
         int time_stamp = Node.time;
        // Message message = new Message(time_stamp,command,1);
         DatagramSocket clientSocket = new DatagramSocket();       
-        InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
-        String sentence = Node.RELEASE + "-";
+        InetAddress IPAddress = InetAddress.getByName("192.168.0.18");
+        String sentence = Main.RELEASE + "-";
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
         sendData = sentence.getBytes();
@@ -110,8 +110,8 @@ public class UDPServer extends Thread {
         int time_stamp = Node.time;
        // Message message = new Message(time_stamp,command,1);
         DatagramSocket clientSocket = new DatagramSocket();       
-        InetAddress IPAddress = InetAddress.getByName("192.168.0.25");
-        String sentence = Node.REPLY + "-";
+        InetAddress IPAddress = InetAddress.getByName("192.168.0.18");
+        String sentence = Main.REPLY + "-";
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
         sendData = sentence.getBytes();
