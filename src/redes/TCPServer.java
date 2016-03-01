@@ -27,8 +27,7 @@ public class TCPServer extends Thread {
     private void request(String data)throws IOException{
         String[] arrayData = data.split(" ");
         String command = arrayData[0];
-        String parameter = "";
-        
+        String parameter = "";        
         Node.time++;
         int time_stamp = Node.time;
         Message message = new Message(time_stamp,command,Main.pid); //agregarle el parametro al mensaje
