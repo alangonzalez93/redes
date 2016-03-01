@@ -51,7 +51,7 @@ public class UDPServer extends Thread {
                     case Main.RELEASE:
                         System.out.println("me llego release");
                         exec(); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
-                        checkAndExecute(); //se fija si es su turno y ejecuta
+                        //checkAndExecute(); //se fija si es su turno y ejecuta
                       
                     break;
                 
@@ -93,6 +93,7 @@ public class UDPServer extends Thread {
     }
     
     private void release() throws IOException {
+        replyCount = 0;
         broadcast(null,Main.RELEASE);
     }
     
