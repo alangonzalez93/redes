@@ -35,20 +35,8 @@ public class TCPServer extends Thread {
             parameter = arrayData[1];
             message.setParameter(Integer.parseInt(parameter));
         }
-        DatagramSocket clientSocket = new DatagramSocket();       
-        InetAddress IPAddress = InetAddress.getByName("192.168.0.18");
         Main.q.add(message);
-        String sentence = Main.REQUEST+ "-" + message.toString();
-        byte[] sendData = new byte[1024];
-        byte[] receiveData = new byte[1024];
-        sendData = sentence.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-        clientSocket.send(sendPacket);       
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-        clientSocket.receive(receivePacket);       
-        String modifiedSentence = new String(receivePacket.getData());      
-       // System.out.println("FROM SERVER:" + modifiedSentence);       
-        clientSocket.close();
+        UDPServer.broadcast(message, Main.REQUEST);
     }
     
     @Override

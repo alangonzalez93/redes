@@ -94,38 +94,32 @@ public class UDPServer extends Thread {
     }
     
     private void release() throws IOException {
-       // Message message = new Message(time_stamp,command,1);
-        DatagramSocket clientSocket = new DatagramSocket();       
-        InetAddress IPAddress = InetAddress.getByName("192.168.0.18");
-        String sentence = Main.RELEASE + "-";
-        byte[] sendData = new byte[1024];
-        byte[] receiveData = new byte[1024];
-        sendData = sentence.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-        clientSocket.send(sendPacket);       
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-        clientSocket.receive(receivePacket);       
-        String modifiedSentence = new String(receivePacket.getData());      
-        //System.out.println("FROM SERVER:" + modifiedSentence);       
-        clientSocket.close();
+        broadcast(null,Main.RELEASE);
     }
     
     private void reply() throws IOException {
-        Node.time++;
-        int time_stamp = Node.time;
-       // Message message = new Message(time_stamp,command,1);
-        DatagramSocket clientSocket = new DatagramSocket();       
-        InetAddress IPAddress = InetAddress.getByName("192.168.0.18");
-        String sentence = Main.REPLY + "-";
-        byte[] sendData = new byte[1024];
-        byte[] receiveData = new byte[1024];
-        sendData = sentence.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
-        clientSocket.send(sendPacket);       
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-        clientSocket.receive(receivePacket);       
-        String modifiedSentence = new String(receivePacket.getData());      
-        //System.out.println("FROM SERVER:" + modifiedSentence);       
-        clientSocket.close();
+       broadcast(null,Main.REPLY);
+    }
+    
+    public static void broadcast(Message message, String type) throws IOException{
+        for (int i = 0; i < Main.ips.size(); i++) {
+                DatagramSocket clientSocket = new DatagramSocket();            
+                InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
+                String sentence = "";
+                if(message != null)
+                    sentence = type+ "-" + message.toString();
+                else
+                    sentence = type+ "-";
+                byte[] sendData = new byte[1024];
+               // byte[] receiveData = new byte[1024];
+                sendData = sentence.getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+                clientSocket.send(sendPacket);       
+               // DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
+                //clientSocket.receive(receivePacket);       
+                //String modifiedSentence = new String(receivePacket.getData());      
+               // System.out.println("FROM SERVER:" + modifiedSentence);       
+                clientSocket.close();  
+        }
     }
 }

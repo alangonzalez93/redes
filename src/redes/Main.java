@@ -25,12 +25,13 @@ public class Main {
     });
 
     private static void loadIps() throws FileNotFoundException, IOException {
-        BufferedReader br = new BufferedReader(new FileReader("/home/luciano/Desktop/redes/src/redes/config.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("config.txt"));
         try {
             String line = br.readLine();
             while (line != null) {
                 ips.add(line);
-                line = br.readLine();
+                System.out.println(line);
+                line = br.readLine();                
             }
         } finally {
             br.close();
