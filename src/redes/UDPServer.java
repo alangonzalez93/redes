@@ -11,15 +11,17 @@ import java.util.logging.Logger;
 
 public class UDPServer extends Thread {
 
-    int replyCount = 0;
+    static int replyCount = 0;
     DatagramSocket serverSocket;
     byte[] receiveData;
     byte[] sendData;
+    private CheckAndExecute checkAndExecute;
 
     public UDPServer() throws SocketException {
         serverSocket = new DatagramSocket(9876);
         receiveData = new byte[1024];
         sendData = new byte[1024];
+        checkAndExecute = new CheckAndExecute();
     }
 
     @Override
@@ -44,7 +46,7 @@ public class UDPServer extends Thread {
                         replyCount++;
                         if(replyCount >= Main.ips.size()){  
                             System.out.println("Me llegaron todos los replys");
-                            checkAndExecute();
+                            checkAndExecute.start();
                         }
                         
                     break;
@@ -70,7 +72,7 @@ public class UDPServer extends Thread {
         }
     }
     
-    private void exec(){
+    public static void exec(){
         Message  m = Main.q.remove();           
         switch(m.getMsg()){
             case "available":
@@ -85,14 +87,11 @@ public class UDPServer extends Thread {
         }
     }
     
-    private void checkAndExecute() throws IOException{
-        if(!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid){
-            exec();
-            release();
-        }
-    }
+    /*private void checkAndExecute() throws IOException{
+        
+    }*/
     
-    private void release() throws IOException {
+    public static void release() throws IOException {
         replyCount = 0;
         broadcast(null,Main.RELEASE);
     }
