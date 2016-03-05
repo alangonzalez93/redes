@@ -17,9 +17,11 @@ public class CheckAndExecute extends Thread {
 
     @Override
     public void run() {
+        Message  m;
         try {
             while (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
-                UDPServer.exec();
+                synchronized (this) {m= Main.q.remove();} 
+                UDPServer.exec(m);
                 UDPServer.release();
             }
         } catch (IOException ex) {

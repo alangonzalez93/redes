@@ -39,7 +39,7 @@ public class UDPServer extends Thread {
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
-                        Main.q.add(msg);
+                        synchronized (this) {Main.q.add(msg);}
                         reply(msg.getPid());
                     break;
                     case Main.REPLY:
@@ -52,7 +52,9 @@ public class UDPServer extends Thread {
                     break;
                     case Main.RELEASE:
                         System.out.println("me llego release");
-                        exec(); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
+                        Message  m;
+                        synchronized (this) {m= Main.q.remove();}   
+                        exec(m); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
                         //checkAndExecute(); //se fija si es su turno y ejecuta
                       
                     break;
@@ -72,8 +74,7 @@ public class UDPServer extends Thread {
         }
     }
     
-    public static void exec(){
-        Message  m = Main.q.remove();           
+    public static void exec(Message m){        
         switch(m.getMsg()){
             case "available":
                 System.out.println(Node.available());
