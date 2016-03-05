@@ -14,7 +14,7 @@ public class Main {
     public static final String REPLY = "REPLY";
     public static final String RELEASE = "RELEASE";
     public static final int NPROCESSES = 1;
-    public static final int pid = 2;
+    public static final int pid = 1;
     public static ArrayList<String> ips = new ArrayList();
     public static ArrayList<Integer> pids = new ArrayList();
     

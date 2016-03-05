@@ -25,7 +25,7 @@ class Message {
         return parameter;
     }
 
-    public void setParameter(int parameter) {
+    public void setParameter(Integer parameter) {
         this.parameter = parameter;
     }
     

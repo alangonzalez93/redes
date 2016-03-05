@@ -19,11 +19,11 @@ public class CheckAndExecute extends Thread {
     public void run() {
         Message  m;
         try {
-            while (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
-                synchronized (this) {m= Main.q.remove();} 
-                UDPServer.exec(m);
-                UDPServer.release();
-            }
+            while (Main.q.isEmpty() || Main.q.peek().getPid() != Main.pid) {}
+            System.out.println("ejecuto el mio");
+            synchronized (this) {m= Main.q.remove();} 
+            UDPServer.exec(m);
+            UDPServer.release();
         } catch (IOException ex) {
             Logger.getLogger(CheckAndExecute.class.getName()).log(Level.SEVERE, null, ex);
         }

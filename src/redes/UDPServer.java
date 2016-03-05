@@ -37,6 +37,9 @@ public class UDPServer extends Thread {
                 switch(s[0]){
                     case Main.REQUEST:    
                         Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
+                        if(s.length == 5){
+                            msg.setParameter(Integer.parseInt(s[4]));
+                        }
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
                         synchronized (this) {Main.q.add(msg);}

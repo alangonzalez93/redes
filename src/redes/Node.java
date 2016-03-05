@@ -24,6 +24,7 @@ public class Node {
     
     public static boolean reserve(int n){
         if(n <= available()){
+            System.out.println("ejecute el reserve");
             reserved =+ n;
             return true;
         }
