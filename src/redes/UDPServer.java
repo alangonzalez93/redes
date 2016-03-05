@@ -98,7 +98,8 @@ public class UDPServer extends Thread {
     }
     
     private void reply(Integer dst) throws IOException {
-      for (int i = 0; !Main.pids.get(i).equals(dst);i++)
+      int i;
+      for (i = 0; !Main.pids.get(i).equals(dst);i++){};
       send(Main.ips.get(i));  
     }
     
