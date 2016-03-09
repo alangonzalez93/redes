@@ -15,13 +15,11 @@ public class UDPServer extends Thread {
     DatagramSocket serverSocket;
     byte[] receiveData;
     byte[] sendData;
-    private CheckAndExecute checkAndExecute;
 
     public UDPServer() throws SocketException {
         serverSocket = new DatagramSocket(9876);
         receiveData = new byte[1024];
         sendData = new byte[1024];
-        checkAndExecute = new CheckAndExecute();
     }
 
     @Override
@@ -50,7 +48,7 @@ public class UDPServer extends Thread {
                         replyCount++;
                         if(replyCount >= Main.ips.size()){  
                             System.out.println("Me llegaron todos los replys");
-                            checkAndExecute.start();
+                            checkAndExecute();
                         }
                         
                     break;
@@ -59,8 +57,9 @@ public class UDPServer extends Thread {
                         Message  m;
                         synchronized (this) {m= Main.q.remove();}   
                         exec(m); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
-                        //checkAndExecute(); //se fija si es su turno y ejecuta
-                      
+                        if(replyCount >= Main.ips.size()){  
+                            checkAndExecute(); //se fija si es su turno y ejecuta 
+                        }                   
                     break;
                 
                 }
@@ -92,9 +91,19 @@ public class UDPServer extends Thread {
         }
     }
     
-    /*private void checkAndExecute() throws IOException{
-        
-    }*/
+    private void checkAndExecute() throws IOException{
+        Message  m;
+        try {
+            if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
+                System.out.println("ejecuto el mio");
+                synchronized (this) {m= Main.q.remove();} 
+                exec(m);
+                release();
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(CheckAndExecute.class.getName()).log(Level.SEVERE, null, ex);
+        }    
+    }
     
     public static void release() throws IOException {
         replyCount = 0;
