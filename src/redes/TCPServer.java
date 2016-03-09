@@ -42,17 +42,18 @@ public class TCPServer extends Thread {
     @Override
     public void run() {
         System.out.println("TCP SERVER ON");
-        Socket connectionSocket;
+ 
+            Socket connectionSocket;
             try {
-                while (true) {
                 connectionSocket = welcomeSocket.accept();
-                BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-                outToClient = new DataOutputStream(connectionSocket.getOutputStream());
-                clientSentence = inFromClient.readLine();
-                request(clientSentence);
-                //System.out.println("Received TCP: " + clientSentence);
+                while (!connectionSocket.isClosed()) {                                      
+                    BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                    outToClient = new DataOutputStream(connectionSocket.getOutputStream());
+                    clientSentence = inFromClient.readLine();
+                    request(clientSentence);
+                    //System.out.println("Received TCP: " + clientSentence);
                 }
-                //
+                
             } catch (IOException ex) {
                 Logger.getLogger(TCPServer.class.getName()).log(Level.SEVERE, null, ex);
             }
