@@ -32,7 +32,7 @@ public class UDPServer extends Thread {
                 String sentence = new String(receivePacket.getData());
                // System.out.println("Received UDP ");
                 String[] s = sentence.split("-");
-                Message msg = new Message(Integer.valueOf(s[1]),Integer.valueOf(s[3])); //s[1] = tiempo , s[3]= pid
+                Message msg = new Message(Integer.parseInt(s[1]),Integer.parseInt(s[3])); //s[1] = tiempo , s[3]= pid
                 switch(s[0]){ //s[0] = comando
                     case Main.REQUEST:    
                          // crea el mensaje nuevo con lo que le llego
@@ -106,7 +106,7 @@ public class UDPServer extends Thread {
         broadcast(m,Main.RELEASE);
     }
     
-    private void reply(Integer dst) throws IOException {
+    private void reply(int dst) throws IOException {
         int i;
         for (i = 0; !Main.pids.get(i).equals(dst);i++){};
         Node.time++;
