@@ -20,6 +20,8 @@ public class TCPServer extends Thread {
     ServerSocket welcomeSocket;
     DataOutputStream outToClient;
     
+   
+    
     public TCPServer() throws IOException {
         welcomeSocket = new ServerSocket(6789);
     }
@@ -27,13 +29,12 @@ public class TCPServer extends Thread {
     private void request(String data)throws IOException{
         String[] arrayData = data.split(" ");
         String command = arrayData[0];
-        String parameter = "";        
+        Main.parameter = -1; 
+        Main.command = command;
         Node.time++;
-        int time_stamp = Node.time;
-        Message message = new Message(time_stamp,command,Main.pid); //agregarle el parametro al mensaje
+        Message message = new Message(Node.time,Main.pid); //agregarle el parametro al mensaje
         if(arrayData.length > 1){
-            parameter = arrayData[1];
-            message.setParameter(Integer.parseInt(parameter));
+            Main.parameter = Integer.parseInt(arrayData[1]);
         }
         Main.q.add(message);
         UDPServer.broadcast(message, Main.REQUEST);

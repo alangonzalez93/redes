@@ -32,19 +32,18 @@ public class UDPServer extends Thread {
                 String sentence = new String(receivePacket.getData());
                // System.out.println("Received UDP "+ sentence);
                 String[] s = sentence.split("-");
-                switch(s[0]){
+                Message msg = new Message(Integer.parseInt(s[1]),Integer.parseInt(s[3])); //s[1] = tiempo , s[3]= pid
+                switch(s[0]){ //s[0] = comando
                     case Main.REQUEST:    
-                        Message msg = new Message(Integer.parseInt(s[1]),s[2],Integer.parseInt(s[3])); // crea el mensaje nuevo con lo que le llego
-                        System.out.println("arreglo " + s.length);
-                        if(s.length == 6){
-                            msg.setParameter(Integer.parseInt(s[4]));
-                        }
+                         // crea el mensaje nuevo con lo que le llego
+                        System.out.println("arreglo " + s.length); 
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
-                        synchronized (this) {Main.q.add(msg);}
+                        Main.q.add(msg);
                         reply(msg.getPid());
                     break;
                     case Main.REPLY:
+                        Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         replyCount++;
                         if(replyCount >= Main.ips.size()){  
                             System.out.println("Me llegaron todos los replys");
@@ -54,9 +53,9 @@ public class UDPServer extends Thread {
                     break;
                     case Main.RELEASE:
                         System.out.println("me llego release");
-                        Message  m;
-                        synchronized (this) {m= Main.q.remove();}   
-                        exec(m); // elimina el tope y lo ejecuta para igualar su estado al de los demas.
+                        Main.q.remove();
+                        Node.time = Math.max(Node.time, msg.getTime()) + 1;
+                        Node.reserved = Integer.parseInt(s[2]); // s[2] = estado
                         if(replyCount >= Main.ips.size()){  
                             checkAndExecute(); //se fija si es su turno y ejecuta 
                         }                   
@@ -77,27 +76,26 @@ public class UDPServer extends Thread {
         }
     }
     
-    public static void exec(Message m){        
-        switch(m.getMsg()){
+    public static void exec(){        
+        switch(Main.command){
             case "available":
                 System.out.println(Node.available());
             break;
             case "reserve":
-                Node.reserve(m.getParameter());
+                Node.reserve(Main.parameter);
             break;
             case "cancel":
-                Node.cancel(m.getParameter());
+                Node.cancel(Main.parameter);
             break;
         }
     }
     
     private void checkAndExecute() throws IOException{
-        Message  m;
         try {
             if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
                 System.out.println("ejecuto el mio");
-                synchronized (this) {m= Main.q.remove();} 
-                exec(m);
+                Main.q.remove(); 
+                exec();
                 release();
             }
         } catch (IOException ex) {
@@ -107,25 +105,26 @@ public class UDPServer extends Thread {
     
     public static void release() throws IOException {
         replyCount = 0;
-        broadcast(null,Main.RELEASE);
+        Node.time++;
+        Message m = new Message(Node.time,Main.pid,Node.reserved);
+        broadcast(m,Main.RELEASE);
     }
     
     private void reply(Integer dst) throws IOException {
-      int i;
-      for (i = 0; !Main.pids.get(i).equals(dst);i++){};
-      send(Main.ips.get(i));  
-    }
-    
-    private void send(String ip) throws IOException{
+        int i;
+        for (i = 0; !Main.pids.get(i).equals(dst);i++){};
+        Node.time++;
+        Message m = new Message(Node.time,Main.pid);
         DatagramSocket clientSocket = new DatagramSocket();            
-        InetAddress IPAddress = InetAddress.getByName(ip);
-        String sentence = Main.REPLY+ "-";
+        InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
+        String sentence = Main.REPLY+ "-" + m.toString();
         byte[] sendData = new byte[1024];
         sendData = sentence.getBytes();
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
         clientSocket.send(sendPacket);             
         clientSocket.close();  
     }
+    
     public static void broadcast(Message message, String type) throws IOException{
         for (int i = 0; i < Main.ips.size(); i++) {
             DatagramSocket clientSocket = new DatagramSocket();            

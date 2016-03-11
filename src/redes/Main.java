@@ -15,8 +15,10 @@ public class Main {
     public static final String RELEASE = "RELEASE";
     public static final int NPROCESSES = 1;
     public static final int pid = 2;
-    public static ArrayList<String> ips = new ArrayList();
+    public static ArrayList<String> ips =  new ArrayList();
     public static ArrayList<Integer> pids = new ArrayList();
+    public static int parameter = -1;
+    public static String command = "";
     
     static SyncQueue<Message> q = new SyncQueue<Message>(10, new Comparator<Message>() {
         public int compare(Message m1, Message m2) {

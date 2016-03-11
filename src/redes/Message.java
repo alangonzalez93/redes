@@ -11,22 +11,27 @@ package redes;
  */
 class Message {
    private Integer time;
-   private String msg;
+   private int state;
    private Integer pid;
-   private int parameter = 0;
+   
 
-    public Message(Integer time, String msg, Integer pid) {
+    public Message(Integer time, Integer pid) {
         this.time = time;
-        this.msg = msg;
         this.pid = pid;
     }
 
-    public int getParameter() {
-        return parameter;
+    public Message(Integer time, Integer pid, int state) {
+        this.time = time;
+        this.pid = pid;
+        this.state = state;
+    }
+    
+    public int getState() {
+        return state;
     }
 
-    public void setParameter(Integer parameter) {
-        this.parameter = parameter;
+    public void setState(Integer parameter) {
+        this.state = parameter;
     }
     
     public Integer getTime() {
@@ -35,14 +40,6 @@ class Message {
 
     public void setTime(Integer time) {
         this.time = time;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
     }
 
     public Integer getPid() {
@@ -57,7 +54,7 @@ class Message {
 
     @Override
     public String toString() {
-        return time.toString()+"-"+msg+"-"+pid.toString()+"-"+parameter+"-";
+        return time.toString()+"-"+state+"-"+pid.toString()+"-";
     }
    
 }
