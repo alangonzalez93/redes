@@ -30,13 +30,13 @@ public class UDPServer extends Thread {
             try {
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
-               // System.out.println("Received UDP "+ sentence);
+               // System.out.println("Received UDP ");
                 String[] s = sentence.split("-");
-                Message msg = new Message(Integer.parseInt(s[1]),Integer.parseInt(s[3])); //s[1] = tiempo , s[3]= pid
+                Message msg = new Message(Integer.valueOf(s[1]),Integer.valueOf(s[3])); //s[1] = tiempo , s[3]= pid
                 switch(s[0]){ //s[0] = comando
                     case Main.REQUEST:    
                          // crea el mensaje nuevo con lo que le llego
-                        System.out.println("arreglo " + s.length); 
+                        //System.out.println("arreglo " + s.length); 
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
                         Main.q.add(msg);

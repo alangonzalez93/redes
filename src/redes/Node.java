@@ -7,7 +7,7 @@ public class Node {
 
     
     static int reserved = 0;
-    static int seats = 30;
+    static final int seats = 30;
     static int time = 0;
    
     
@@ -25,7 +25,7 @@ public class Node {
     public static boolean reserve(int n){
         if(n <= available()){
             System.out.println("ejecute el reserve");
-            reserved =+ n;
+            reserved += n;
             return true;
         }
         return false;
@@ -33,7 +33,7 @@ public class Node {
     
     public static boolean cancel(int n){
         if(n <= reserved){
-            reserved =- n;
+            reserved -= n;
             return true;
         }
         return false;
