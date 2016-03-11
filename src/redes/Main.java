@@ -14,11 +14,11 @@ public class Main {
     public static final String REPLY = "REPLY";
     public static final String RELEASE = "RELEASE";
     public static final int NPROCESSES = 1;
-    public static final int pid = 1;
+    public static final int pid = 2;
     public static ArrayList<String> ips = new ArrayList();
     public static ArrayList<Integer> pids = new ArrayList();
     
-    static PriorityQueue<Message> q = new PriorityQueue<Message>(10, new Comparator<Message>() {
+    static SyncQueue<Message> q = new SyncQueue<Message>(10, new Comparator<Message>() {
         public int compare(Message m1, Message m2) {
             return (m1.getTime() > m2.getTime()) ? 1
                     : (m1.getTime() < m2.getTime()) ? -1
