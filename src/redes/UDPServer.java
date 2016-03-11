@@ -91,16 +91,12 @@ public class UDPServer extends Thread {
     }
     
     private void checkAndExecute() throws IOException{
-        try {
-            if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
-                System.out.println("ejecuto el mio");
-                Main.q.remove(); 
-                exec();
-                release();
-            }
-        } catch (IOException ex) {
-            Logger.getLogger(CheckAndExecute.class.getName()).log(Level.SEVERE, null, ex);
-        }    
+        if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
+            System.out.println("ejecuto el mio");
+            Main.q.remove(); 
+            exec();
+            release();
+        }
     }
     
     public static void release() throws IOException {
