@@ -14,12 +14,16 @@ public class Main {
     public static final String REPLY = "REPLY";
     public static final String RELEASE = "RELEASE";
     public static final int NPROCESSES = 1;
-    public static final int pid = 2;
-    public static ArrayList<String> ips =  new ArrayList();
-    public static ArrayList<Integer> pids = new ArrayList();
-    public static int parameter = -1;
+    public static int pid;
+    public static int udpPort;
+    public static int tcpPort;
+    //public static ArrayList<String> ips =  new ArrayList(); // ip's de los demas peers
+    //public static ArrayList<Integer> pids = new ArrayList(); // pid's de los demas peers
+    public static ArrayList<PeerData> peerData = new ArrayList();
+    public static int parameter = -1; // parametro opcional de las consultas
     public static String command = "";
     
+    //Cola de prioridades, donde se encolan consultas, es la estructura que usa el algoritmo distribuido de Lamport para la exclusion mutua
     static SyncQueue<Message> q = new SyncQueue<Message>(10, new Comparator<Message>() {
         public int compare(Message m1, Message m2) {
             return (m1.getTime() > m2.getTime()) ? 1
@@ -28,14 +32,20 @@ public class Main {
         }
     });
 
+    /*Metodo que lee el archivo de configuracion y carga los arreglos ips y pids*/
     private static void loadConfig() throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader("config.txt"));
         try {
             String line = br.readLine();
+            String[] fstLine = line.split("-");//fstLine[0]=pid, fstLine[1]=udpPort, fstLine[2]=tcpPort
+            peerData.add(new PeerData(Integer.parseInt(fstLine[0]), Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2])));
+            pid = peerData.get(0).getPid();
+            udpPort = peerData.get(0).getUdpPort();
+            tcpPort = peerData.get(0).getTcpPort();
+            line = br.readLine();
             while (line != null) {
-                String[] sLine = line.split("-");
-                ips.add(sLine[0]);
-                pids.add(Integer.parseInt(sLine[1]));
+                String[] sLine = line.split("-");//sLine[0]=ip, sLine[1]=pid, sLine[2]=udpPort, sLine[3]=tcpPort
+                peerData.add(new PeerData(sLine[0],Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2]), Integer.parseInt(fstLine[3])));
                 line = br.readLine();
             }
         } finally {
@@ -43,14 +53,13 @@ public class Main {
         }
     }
 
+    /*Metodo principal, inicia los hilos de ejecucion de tcp para el cliente y udp para los peers*/
     public static void main(String[] args) throws IOException {
         loadConfig();
-        for (String s : ips){
-            System.out.println(s);
+        for (PeerData pd : peerData){
+            System.out.println(pd.toString());
         }
-        for (Integer i : pids){
-            System.out.println(i.toString());
-        }
+        
         TCPServer tcp = new TCPServer();
         UDPServer udp = new UDPServer();
         tcp.start();

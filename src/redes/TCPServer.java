@@ -23,8 +23,9 @@ public class TCPServer extends Thread {
    
     
     public TCPServer() throws IOException {
-        welcomeSocket = new ServerSocket(6789);
+        welcomeSocket = new ServerSocket(Main.tcpPort);
     }
+    
     
     private void request(String data)throws IOException{
         String[] arrayData = data.split(" ");

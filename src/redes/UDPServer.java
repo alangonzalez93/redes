@@ -17,7 +17,7 @@ public class UDPServer extends Thread {
     byte[] sendData;
 
     public UDPServer() throws SocketException {
-        serverSocket = new DatagramSocket(9876);
+        serverSocket = new DatagramSocket(Main.udpPort);
         receiveData = new byte[1024];
         sendData = new byte[1024];
     }
@@ -45,7 +45,7 @@ public class UDPServer extends Thread {
                     case Main.REPLY:
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         replyCount++;
-                        if(replyCount >= Main.ips.size()){  
+                        if(replyCount >= Main.peerData.size()-1){  
                             System.out.println("Me llegaron todos los replys");
                             checkAndExecute();
                         }
@@ -56,7 +56,7 @@ public class UDPServer extends Thread {
                         Main.q.remove();
                         Node.time = Math.max(Node.time, msg.getTime()) + 1;
                         Node.reserved = Integer.parseInt(s[2]); // s[2] = estado
-                        if(replyCount >= Main.ips.size()){  
+                        if(replyCount >= Main.peerData.size()-1){  
                             checkAndExecute(); //se fija si es su turno y ejecuta 
                         }                   
                     break;
@@ -108,23 +108,23 @@ public class UDPServer extends Thread {
     
     private void reply(int dst) throws IOException {
         int i;
-        for (i = 0; !Main.pids.get(i).equals(dst);i++){};
+        for (i = 1; !(Main.peerData.get(i).getPid() == dst);i++){};
         Node.time++;
         Message m = new Message(Node.time,Main.pid);
         DatagramSocket clientSocket = new DatagramSocket();            
-        InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
+        InetAddress IPAddress = InetAddress.getByName(Main.peerData.get(i).getIp());
         String sentence = Main.REPLY+ "-" + m.toString();
         byte[] sendData = new byte[1024];
         sendData = sentence.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, Main.peerData.get(i).getUdpPort());
         clientSocket.send(sendPacket);             
         clientSocket.close();  
     }
     
     public static void broadcast(Message message, String type) throws IOException{
-        for (int i = 0; i < Main.ips.size(); i++) {
+        for (int i = 1; i < Main.peerData.size()-1; i++) {
             DatagramSocket clientSocket = new DatagramSocket();            
-            InetAddress IPAddress = InetAddress.getByName(Main.ips.get(i));
+            InetAddress IPAddress = InetAddress.getByName(Main.peerData.get(i).getIp());
             String sentence = "";
             if(message != null)
                 sentence = type+ "-" + message.toString();
@@ -133,11 +133,11 @@ public class UDPServer extends Thread {
             byte[] sendData = new byte[1024];
            // byte[] receiveData = new byte[1024];
             sendData = sentence.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 9876);
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, Main.peerData.get(i).getUdpPort());
             clientSocket.send(sendPacket);       
            // DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-            //clientSocket.receive(receivePacket);       
-            //String modifiedSentence = new String(receivePacket.getData());      
+           //clientSocket.receive(receivePacket);       
+           //String modifiedSentence = new String(receivePacket.getData());      
            // System.out.println("FROM SERVER:" + modifiedSentence);       
             clientSocket.close();  
         }
