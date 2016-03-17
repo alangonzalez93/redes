@@ -45,7 +45,7 @@ public class Main {
             line = br.readLine();
             while (line != null) {
                 String[] sLine = line.split("-");//sLine[0]=ip, sLine[1]=pid, sLine[2]=udpPort, sLine[3]=tcpPort
-                peerData.add(new PeerData(sLine[0],Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2]), Integer.parseInt(fstLine[3])));
+                peerData.add(new PeerData(sLine[0],Integer.parseInt(sLine[1]), Integer.parseInt(sLine[2]), Integer.parseInt(sLine[3])));
                 line = br.readLine();
             }
         } finally {
