@@ -108,7 +108,7 @@ public class UDPServer extends Thread {
     
     private void reply(int dst) throws IOException {
         int i;
-        for (i = 1; !(Main.peerData.get(i).getPid() == dst);i++){};
+        for (i = 0; !(Main.peerData.get(i).getPid() == dst);i++){};
         Node.time++;
         Message m = new Message(Node.time,Main.pid);
         DatagramSocket clientSocket = new DatagramSocket();            
@@ -122,7 +122,7 @@ public class UDPServer extends Thread {
     }
     
     public static void broadcast(Message message, String type) throws IOException{
-        for (int i = 1; i < Main.peerData.size()-1; i++) {
+        for (int i = 0; i < Main.peerData.size(); i++) {
             DatagramSocket clientSocket = new DatagramSocket();            
             InetAddress IPAddress = InetAddress.getByName(Main.peerData.get(i).getIp());
             String sentence = "";

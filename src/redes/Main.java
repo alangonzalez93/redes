@@ -38,10 +38,10 @@ public class Main {
         try {
             String line = br.readLine();
             String[] fstLine = line.split("-");//fstLine[0]=pid, fstLine[1]=udpPort, fstLine[2]=tcpPort
-            peerData.add(new PeerData(Integer.parseInt(fstLine[0]), Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2])));
-            pid = peerData.get(0).getPid();
-            udpPort = peerData.get(0).getUdpPort();
-            tcpPort = peerData.get(0).getTcpPort();
+            //peerData.add(new PeerData(Integer.parseInt(fstLine[0]), Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2])));
+            pid = Integer.parseInt(fstLine[0]);
+            udpPort = Integer.parseInt(fstLine[1]);
+            tcpPort = Integer.parseInt(fstLine[2]);
             line = br.readLine();
             while (line != null) {
                 String[] sLine = line.split("-");//sLine[0]=ip, sLine[1]=pid, sLine[2]=udpPort, sLine[3]=tcpPort
