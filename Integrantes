@@ -1,0 +1,35 @@
+Integrantes
+
+	Luciano Putruele. Condicion: Regular.
+	Agustin Bauer. Condicion: Regular.
+	Alan Gonzalez. Condicion: Regular.
+
+Lenguaje
+
+	java
+
+Sobre el programa
+
+	El algoritmo distribuido utilizado -para garantizar exclusion mutua entre los procesos- es el de Lamport.
+	El programa utiliza dos threads, uno para el servidor TCP (comunicacion con el cliente) y otro para el servidor UDP (comunicacion con los peers).
+	Por lo tanto tambien hacia falta sincronizar todos los accesos a la estructura utilizada por el algoritmo de Lamport, ya sean lecturas o escrituras, ya que se podian dar condiciones de carrera.
+
+	El sistema es ta compuesto por las siguentes clases:
+
+	Main: Clase principal, inicia los threads correspondientes a UDPServer y TCPServer.
+	TCPServer: Maneja la comunicacion con el cliente.
+	UDPServer: Maneja la comunicacion con los peers.
+	Terminal: Representa el estado del sistema (cantidad de asientos disponibles), contiene los metodos para consultar,reservar y cancelar asientos.
+	Message: Estructura que representa una consulta, tiene un timestamp.
+	SyncQueue: Estructura utilizada para el algoritmo de Lamport, es una cola de prioridades sincronizada
+	PeerData: Estructura que representa la informacion util de un peer (p.e ip).
+
+Instrucciones de uso
+
+	1.Modificar el archivo config.txt donde cada linea debe tener el siguiente formato,
+	  la primer linea es la informacion local: pid-udpport-tcpport
+	  desde la segunda linea esta la informacion de los demas peers: ip-pid-udpport-tcpport
+	2.Ejecutar el programa (java -jar Main).
+	3.Ejecutar telnet (telnet localhost port).
+	4.Las consultas son available, reserve n y cancel n donde n es la cantidad de asientos a reservar o cancelar.
+
