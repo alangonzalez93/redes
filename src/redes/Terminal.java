@@ -2,7 +2,7 @@
 package redes;
 
 
-public class Node {
+public class Terminal {
     
 
     

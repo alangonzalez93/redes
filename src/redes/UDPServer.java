@@ -37,13 +37,13 @@ public class UDPServer extends Thread {
                     case Main.REQUEST:    
                          // crea el mensaje nuevo con lo que le llego
                         //System.out.println("arreglo " + s.length); 
-                        Node.time = Math.max(Node.time, msg.getTime()) + 1;
+                        Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         System.out.println("me llego request: " + msg.toString());                
                         Main.q.add(msg);
                         reply(msg.getPid());
                     break;
                     case Main.REPLY:
-                        Node.time = Math.max(Node.time, msg.getTime()) + 1;
+                        Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         replyCount++;
                         if(replyCount >= Main.peerData.size()-1){  
                             System.out.println("Me llegaron todos los replys");
@@ -54,8 +54,8 @@ public class UDPServer extends Thread {
                     case Main.RELEASE:
                         System.out.println("me llego release");
                         Main.q.remove();
-                        Node.time = Math.max(Node.time, msg.getTime()) + 1;
-                        Node.reserved = Integer.parseInt(s[2]); // s[2] = estado
+                        Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
+                        Terminal.reserved = Integer.parseInt(s[2]); // s[2] = estado
                         if(replyCount >= Main.peerData.size()-1){  
                             checkAndExecute(); //se fija si es su turno y ejecuta 
                         }                   
@@ -79,13 +79,13 @@ public class UDPServer extends Thread {
     public static void exec(){        
         switch(Main.command){
             case "available":
-                System.out.println(Node.available());
+                System.out.println(Terminal.available());
             break;
             case "reserve":
-                Node.reserve(Main.parameter);
+                Terminal.reserve(Main.parameter);
             break;
             case "cancel":
-                Node.cancel(Main.parameter);
+                Terminal.cancel(Main.parameter);
             break;
         }
     }
@@ -101,16 +101,16 @@ public class UDPServer extends Thread {
     
     public static void release() throws IOException {
         replyCount = 0;
-        Node.time++;
-        Message m = new Message(Node.time,Main.pid,Node.reserved);
+        Terminal.time++;
+        Message m = new Message(Terminal.time,Main.pid,Terminal.reserved);
         broadcast(m,Main.RELEASE);
     }
     
     private void reply(int dst) throws IOException {
         int i;
         for (i = 0; !(Main.peerData.get(i).getPid() == dst);i++){};
-        Node.time++;
-        Message m = new Message(Node.time,Main.pid);
+        Terminal.time++;
+        Message m = new Message(Terminal.time,Main.pid);
         DatagramSocket clientSocket = new DatagramSocket();            
         InetAddress IPAddress = InetAddress.getByName(Main.peerData.get(i).getIp());
         String sentence = Main.REPLY+ "-" + m.toString();

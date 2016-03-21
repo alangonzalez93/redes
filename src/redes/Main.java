@@ -59,7 +59,9 @@ public class Main {
         for (PeerData pd : peerData){
             System.out.println(pd.toString());
         }
-        
+        System.out.println(pid);
+        System.out.println(udpPort);
+        System.out.println(tcpPort);
         TCPServer tcp = new TCPServer();
         UDPServer udp = new UDPServer();
         tcp.start();

@@ -32,8 +32,8 @@ public class TCPServer extends Thread {
         String command = arrayData[0];
         Main.parameter = -1; 
         Main.command = command;
-        Node.time++;
-        Message message = new Message(Node.time,Main.pid); //agregarle el parametro al mensaje
+        Terminal.time++;
+        Message message = new Message(Terminal.time,Main.pid); //agregarle el parametro al mensaje
         if(arrayData.length > 1){
             Main.parameter = Integer.parseInt(arrayData[1]);
         }
