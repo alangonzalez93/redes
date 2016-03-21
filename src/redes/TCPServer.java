@@ -23,7 +23,7 @@ public class TCPServer extends Thread {
         welcomeSocket = new ServerSocket(Main.tcpPort);
     }
     
-    
+    /*Metodo que se encarga de procesar un request del cliente*/
     private void request(String data)throws IOException{
         String[] arrayData = data.split(" ");
         String command = arrayData[0];

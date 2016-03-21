@@ -76,6 +76,7 @@ public class UDPServer extends Thread {
         }
     }
     
+    /*Metodo que ejecuta el codigo correspondiente al request*/
     public static void exec(){        
         switch(Main.command){
             case "available":
@@ -90,6 +91,7 @@ public class UDPServer extends Thread {
         }
     }
     
+    /*Metodo que llama a exec solo si tiene derecho a acceder a la region critica*/
     private void checkAndExecute() throws IOException{
         if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
             System.out.println("ejecuto el mio");
@@ -99,6 +101,7 @@ public class UDPServer extends Thread {
         }
     }
     
+    /*Metodo que manda release a todos*/
     public static void release() throws IOException {
         replyCount = 0;
         Terminal.time++;
@@ -106,6 +109,7 @@ public class UDPServer extends Thread {
         broadcast(m,Main.RELEASE);
     }
     
+    /*Metodo que manda reply a quien corresponda*/
     private void reply(int dst) throws IOException {
         int i;
         for (i = 0; !(Main.peerData.get(i).getPid() == dst);i++){};
@@ -121,6 +125,7 @@ public class UDPServer extends Thread {
         clientSocket.close();  
     }
     
+    /*Metodo que manda un mensaje a todos los peers*/
     public static void broadcast(Message message, String type) throws IOException{
         for (int i = 0; i < Main.peerData.size(); i++) {
             DatagramSocket clientSocket = new DatagramSocket();            
