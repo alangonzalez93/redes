@@ -3,9 +3,9 @@ package redes;
 public class PeerData {
     
     private String ip;
-    private final int pid;
-    private final int udpPort;
-    private final int tcpPort;
+    private  int pid;
+    private  int udpPort;
+    private  int tcpPort;
 
     public PeerData(String ip, int pid, int udpPort, int tcpPort) {
         this.ip = ip;

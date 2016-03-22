@@ -18,13 +18,13 @@ public class Terminal {
     }*/
     
     public static int available(){
-        System.out.println("ejecute el available");
+        //System.out.println("ejecute el available");
         return seats - reserved;
     }
     
     public static boolean reserve(int n){
         if(n <= available()){
-            System.out.println("ejecute el reserve");
+            System.out.println("Reservaste " + n);
             reserved += n;
             return true;
         }
@@ -33,6 +33,7 @@ public class Terminal {
     
     public static boolean cancel(int n){
         if(n <= reserved){
+            System.out.println("Cancelaste " + n);
             reserved -= n;
             return true;
         }

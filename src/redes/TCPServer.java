@@ -50,7 +50,6 @@ public class TCPServer extends Thread {
                     outToClient = new DataOutputStream(connectionSocket.getOutputStream());
                     clientSentence = inFromClient.readLine();
                     request(clientSentence);
-                    //System.out.println("Received TCP: " + clientSentence);
                 }
                 
             } catch (IOException ex) {

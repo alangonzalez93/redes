@@ -16,8 +16,6 @@ public class Main {
     public static int pid;
     public static int udpPort;
     public static int tcpPort;
-    //public static ArrayList<String> ips =  new ArrayList(); // ip's de los demas peers
-    //public static ArrayList<Integer> pids = new ArrayList(); // pid's de los demas peers
     public static ArrayList<PeerData> peerData = new ArrayList();
     public static int parameter = -1; // parametro opcional de las consultas
     public static String command = "";
@@ -37,7 +35,6 @@ public class Main {
         try {
             String line = br.readLine();
             String[] fstLine = line.split("-");//fstLine[0]=pid, fstLine[1]=udpPort, fstLine[2]=tcpPort
-            //peerData.add(new PeerData(Integer.parseInt(fstLine[0]), Integer.parseInt(fstLine[1]), Integer.parseInt(fstLine[2])));
             pid = Integer.parseInt(fstLine[0]);
             udpPort = Integer.parseInt(fstLine[1]);
             tcpPort = Integer.parseInt(fstLine[2]);
@@ -58,9 +55,7 @@ public class Main {
         for (PeerData pd : peerData){
             System.out.println(pd.toString());
         }
-        System.out.println(pid);
-        System.out.println(udpPort);
-        System.out.println(tcpPort);
+        System.out.println("mis datos. id: " + pid +", udpPort: " + udpPort + ", tcpPort: " + tcpPort);
         TCPServer tcp = new TCPServer();
         UDPServer udp = new UDPServer();
         tcp.start();

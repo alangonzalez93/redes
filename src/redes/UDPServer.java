@@ -38,25 +38,25 @@ public class UDPServer extends Thread {
                          // crea el mensaje nuevo con lo que le llego
                         //System.out.println("arreglo " + s.length); 
                         Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
-                        System.out.println("me llego request: " + msg.toString());                
+                        //System.out.println("me llego request: " + msg.toString());                
                         Main.q.add(msg);
                         reply(msg.getPid());
                     break;
                     case Main.REPLY:
                         Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         replyCount++;
-                        if(replyCount >= Main.peerData.size()-1){  
-                            System.out.println("Me llegaron todos los replys");
+                        if(replyCount >= Main.peerData.size()){  
+                            //System.out.println("Me llegaron todos los replys");
                             checkAndExecute();
                         }
                         
                     break;
                     case Main.RELEASE:
-                        System.out.println("me llego release");
+                        //System.out.println("me llego release");
                         Main.q.remove();
                         Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         Terminal.reserved = Integer.parseInt(s[2]); // s[2] = estado
-                        if(replyCount >= Main.peerData.size()-1){  
+                        if(replyCount >= Main.peerData.size()){  
                             checkAndExecute(); //se fija si es su turno y ejecuta 
                         }                   
                     break;
@@ -80,7 +80,7 @@ public class UDPServer extends Thread {
     public static void exec(){        
         switch(Main.command){
             case "available":
-                System.out.println(Terminal.available());
+                System.out.println("Quedan " + Terminal.available() + " lugares");
             break;
             case "reserve":
                 Terminal.reserve(Main.parameter);
@@ -94,7 +94,7 @@ public class UDPServer extends Thread {
     /*Metodo que llama a exec solo si tiene derecho a acceder a la region critica*/
     private void checkAndExecute() throws IOException{
         if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
-            System.out.println("ejecuto el mio");
+            //System.out.println("ejecuto el mio");
             Main.q.remove(); 
             exec();
             release();
