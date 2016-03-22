@@ -32,8 +32,8 @@ public class Main {
     });
 
     /*Metodo que lee el archivo de configuracion y carga los arreglos ips y pids*/
-    private static void loadConfig() throws FileNotFoundException, IOException {
-        BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+    private static void loadConfig(String path) throws FileNotFoundException, IOException {
+        BufferedReader br = new BufferedReader(new FileReader(path));
         try {
             String line = br.readLine();
             String[] fstLine = line.split("-");//fstLine[0]=pid, fstLine[1]=udpPort, fstLine[2]=tcpPort
@@ -54,7 +54,7 @@ public class Main {
 
     /*Metodo principal, inicia los hilos de ejecucion de tcp para el cliente y udp para los peers*/
     public static void main(String[] args) throws IOException {
-        loadConfig();
+        loadConfig(args[0]);
         for (PeerData pd : peerData){
             System.out.println(pd.toString());
         }
