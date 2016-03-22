@@ -9,16 +9,8 @@ public class Terminal {
     static int reserved = 0;
     static final int seats = 30;
     static int time = 0;
-   
-    
-    /*public Node(){
-        reserved = 0;
-        q = new PriorityQueue<Message>();
-        seats = 30;
-    }*/
     
     public static int available(){
-        //System.out.println("ejecute el available");
         return seats - reserved;
     }
     

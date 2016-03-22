@@ -30,15 +30,12 @@ public class UDPServer extends Thread {
             try {
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
-               // System.out.println("Received UDP ");
                 String[] s = sentence.split("-");
                 Message msg = new Message(Integer.parseInt(s[1]),Integer.parseInt(s[3])); //s[1] = tiempo , s[3]= pid
                 switch(s[0]){ //s[0] = comando
                     case Main.REQUEST:    
                          // crea el mensaje nuevo con lo que le llego
-                        //System.out.println("arreglo " + s.length); 
-                        Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
-                        //System.out.println("me llego request: " + msg.toString());                
+                        Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;              
                         Main.q.add(msg);
                         reply(msg.getPid());
                     break;
@@ -46,13 +43,11 @@ public class UDPServer extends Thread {
                         Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         replyCount++;
                         if(replyCount >= Main.peerData.size()){  
-                            //System.out.println("Me llegaron todos los replys");
                             checkAndExecute();
                         }
                         
                     break;
                     case Main.RELEASE:
-                        //System.out.println("me llego release");
                         Main.q.remove();
                         Terminal.time = Math.max(Terminal.time, msg.getTime()) + 1;
                         Terminal.reserved = Integer.parseInt(s[2]); // s[2] = estado
@@ -94,7 +89,6 @@ public class UDPServer extends Thread {
     /*Metodo que llama a exec solo si tiene derecho a acceder a la region critica*/
     private void checkAndExecute() throws IOException{
         if (!Main.q.isEmpty() && Main.q.peek().getPid() == Main.pid) {
-            //System.out.println("ejecuto el mio");
             Main.q.remove(); 
             exec();
             release();
@@ -136,14 +130,9 @@ public class UDPServer extends Thread {
             else
                 sentence = type+ "-";
             byte[] sendData = new byte[1024];
-           // byte[] receiveData = new byte[1024];
             sendData = sentence.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, Main.peerData.get(i).getUdpPort());
-            clientSocket.send(sendPacket);       
-           // DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);       
-           //clientSocket.receive(receivePacket);       
-           //String modifiedSentence = new String(receivePacket.getData());      
-           // System.out.println("FROM SERVER:" + modifiedSentence);       
+            clientSocket.send(sendPacket);                
             clientSocket.close();  
         }
     }
